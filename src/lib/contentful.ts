@@ -64,3 +64,14 @@ export async function getAllBlogPostSlugs(): Promise<string[]> {
   });
   return entries.items.map((item) => item.fields.slug);
 }
+
+export async function getEntryById(
+  id: string,
+): Promise<TypeBlogPostWithoutUnresolvableLinksResponse | null> {
+  try {
+    const entry = await deliveryClient.withoutUnresolvableLinks.getEntry<TypeBlogPostSkeleton>(id);
+    return entry ?? null;
+  } catch {
+    return null;
+  }
+}
