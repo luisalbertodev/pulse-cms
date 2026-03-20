@@ -1,7 +1,7 @@
 import { draftMode } from "next/headers";
 import { redirect } from "next/navigation";
 import type { NextRequest } from "next/server";
-import { getBlogPostBySlug, getPageBySlug } from "@/lib/contentful";
+import { getBlogPostBySlug } from "@/lib/contentful";
 
 const BLOG_PREFIX = "/blog/";
 
@@ -10,11 +10,6 @@ async function resolveRedirectSlug(slug: string): Promise<string | null> {
     const postSlug = slug.slice(BLOG_PREFIX.length);
     const post = await getBlogPostBySlug(postSlug, true);
     return post ? `/blog/${post.fields.slug}` : null;
-  }
-
-  if (slug === "/" || slug === "/blog") {
-    const page = await getPageBySlug(slug, true);
-    return page ? slug : null;
   }
 
   return null;
