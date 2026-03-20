@@ -16,7 +16,6 @@ Pulse — Marketing site built with Next.js 15 (App Router) + Contentful as head
 ```bash
 npm run dev          # Start dev server
 npm run build        # Production build
-npm run generate:types  # Regenerate Contentful types (if configured)
 ```
 
 ## Project Structure
