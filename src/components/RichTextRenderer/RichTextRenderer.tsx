@@ -2,15 +2,11 @@ import { documentToReactComponents } from '@contentful/rich-text-react-renderer'
 import { BLOCKS, INLINES, MARKS } from '@contentful/rich-text-types';
 import type { Block, Document, Inline } from '@contentful/rich-text-types';
 import type { ReactNode } from 'react';
+import { assetUrl } from '@/lib/utils';
 import styles from './RichTextRenderer.module.scss';
 
 interface RichTextRendererProps {
   document: Document;
-}
-
-function assetUrl(url: string | undefined): string | undefined {
-  if (!url) return undefined;
-  return url.startsWith('//') ? `https:${url}` : url;
 }
 
 export default function RichTextRenderer({ document }: RichTextRendererProps) {

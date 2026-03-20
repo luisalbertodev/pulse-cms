@@ -1,13 +1,9 @@
 import type { TypeHeroWithoutUnresolvableLinksResponse } from '@/@types';
+import { assetUrl } from '@/lib/utils';
 import styles from './Hero.module.scss';
 
 interface HeroProps {
   entry: TypeHeroWithoutUnresolvableLinksResponse;
-}
-
-function assetUrl(url: string | undefined): string | undefined {
-  if (!url) return undefined;
-  return url.startsWith('//') ? `https:${url}` : url;
 }
 
 export default function Hero({ entry }: HeroProps) {

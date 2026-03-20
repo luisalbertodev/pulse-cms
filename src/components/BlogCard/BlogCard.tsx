@@ -1,22 +1,10 @@
 import Link from 'next/link';
 import type { TypeBlogPostWithoutUnresolvableLinksResponse } from '@/@types';
+import { assetUrl, formatDate } from '@/lib/utils';
 import styles from './BlogCard.module.scss';
 
 interface BlogCardProps {
   entry: TypeBlogPostWithoutUnresolvableLinksResponse;
-}
-
-function assetUrl(url: string | undefined): string | undefined {
-  if (!url) return undefined;
-  return url.startsWith('//') ? `https:${url}` : url;
-}
-
-function formatDate(dateStr: string): string {
-  return new Date(dateStr).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  });
 }
 
 export default function BlogCard({ entry }: BlogCardProps) {

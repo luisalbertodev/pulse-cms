@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { draftMode } from 'next/headers';
 import { notFound } from 'next/navigation';
 import { getBlogPostBySlug, getAllBlogPostSlugs } from '@/lib/contentful';
+import { assetUrl, formatDate } from '@/lib/utils';
 import RichTextRenderer from '@/components/RichTextRenderer/RichTextRenderer';
 import styles from './page.module.scss';
 
@@ -24,19 +25,6 @@ export async function generateMetadata({
     title: post.fields.title,
     description: post.fields.excerpt,
   };
-}
-
-function assetUrl(url: string | undefined): string | undefined {
-  if (!url) return undefined;
-  return url.startsWith('//') ? `https:${url}` : url;
-}
-
-function formatDate(dateStr: string): string {
-  return new Date(dateStr).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  });
 }
 
 export default async function BlogPostPage({
