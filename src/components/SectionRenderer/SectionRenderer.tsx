@@ -1,10 +1,19 @@
-import { isTypeHero, isTypeSectionBlogList } from '@/@types';
-import type { ChainModifiers, Entry, EntrySkeletonType, LocaleCode } from 'contentful';
+import {
+  isTypeHero,
+  isTypeSectionBlogList,
+  type TypeHeroWithoutUnresolvableLinksResponse,
+  type TypeSectionBlogListWithoutUnresolvableLinksResponse,
+  type TypePageWithoutUnresolvableLinksResponse,
+} from '@/@types';
 import Hero from '@/components/Hero/Hero';
 import BlogListSection from '@/components/BlogListSection/BlogListSection';
 
+type PageSections = NonNullable<
+  TypePageWithoutUnresolvableLinksResponse['fields']['sections']
+>;
+
 interface SectionRendererProps {
-  sections: Entry<EntrySkeletonType, ChainModifiers, LocaleCode>[];
+  sections: PageSections;
   preview?: boolean;
 }
 
@@ -12,17 +21,26 @@ export default function SectionRenderer({
   sections,
   preview = false,
 }: SectionRendererProps) {
+  const resolved = sections.filter(
+    (s): s is NonNullable<PageSections[number]> => s != null,
+  );
+
   return (
     <>
-      {sections.map((section) => {
+      {resolved.map((section) => {
         if (isTypeHero(section)) {
-          return <Hero key={section.sys.id} entry={section} />;
+          return (
+            <Hero
+              key={section.sys.id}
+              entry={section as TypeHeroWithoutUnresolvableLinksResponse}
+            />
+          );
         }
         if (isTypeSectionBlogList(section)) {
           return (
             <BlogListSection
               key={section.sys.id}
-              entry={section}
+              entry={section as TypeSectionBlogListWithoutUnresolvableLinksResponse}
               preview={preview}
             />
           );

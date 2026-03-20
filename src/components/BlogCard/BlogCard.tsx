@@ -1,10 +1,9 @@
 import Link from 'next/link';
-import type { TypeBlogPost } from '@/@types';
-import type { ChainModifiers, LocaleCode } from 'contentful';
+import type { TypeBlogPostWithoutUnresolvableLinksResponse } from '@/@types';
 import styles from './BlogCard.module.scss';
 
 interface BlogCardProps {
-  entry: TypeBlogPost<ChainModifiers, LocaleCode>;
+  entry: TypeBlogPostWithoutUnresolvableLinksResponse;
 }
 
 function assetUrl(url: string | undefined): string | undefined {
@@ -21,17 +20,9 @@ function formatDate(dateStr: string): string {
 }
 
 export default function BlogCard({ entry }: BlogCardProps) {
-  const fields = entry.fields as {
-    title: string;
-    slug: string;
-    excerpt?: string;
-    featuredImage?: { fields?: { file?: { url?: string }; title?: string } };
-    author?: string;
-    publishDate?: string;
-  };
-
-  const imageUrl = assetUrl(fields.featuredImage?.fields?.file?.url);
-  const imageAlt: string = fields.featuredImage?.fields?.title ?? fields.title;
+  const { title, slug, excerpt, featuredImage, author, publishDate } = entry.fields;
+  const imageUrl = assetUrl(featuredImage?.fields?.file?.url);
+  const imageAlt = featuredImage?.fields?.title ?? title;
 
   return (
     <article className={styles.card}>
@@ -46,16 +37,16 @@ export default function BlogCard({ entry }: BlogCardProps) {
       )}
       <div className={styles.card__body}>
         <div className={styles.card__meta}>
-          {fields.publishDate && <time dateTime={fields.publishDate}>{formatDate(fields.publishDate)}</time>}
-          {fields.author && fields.publishDate && <span aria-hidden="true">·</span>}
-          {fields.author && <span>{fields.author}</span>}
+          {publishDate && <time dateTime={publishDate}>{formatDate(publishDate)}</time>}
+          {author && publishDate && <span aria-hidden="true">·</span>}
+          {author && <span>{author}</span>}
         </div>
         <h2 className={styles.card__title}>
-          <Link href={`/blog/${fields.slug}`}>{fields.title}</Link>
+          <Link href={`/blog/${slug}`}>{title}</Link>
         </h2>
-        {fields.excerpt && <p className={styles.card__excerpt}>{fields.excerpt}</p>}
+        {excerpt && <p className={styles.card__excerpt}>{excerpt}</p>}
         <div className={styles.card__footer}>
-          <Link href={`/blog/${fields.slug}`} className={styles.card__link}>
+          <Link href={`/blog/${slug}`} className={styles.card__link}>
             Read more →
           </Link>
         </div>

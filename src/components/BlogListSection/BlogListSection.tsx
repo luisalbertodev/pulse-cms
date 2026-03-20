@@ -1,11 +1,10 @@
-import type { TypeSectionBlogList } from '@/@types';
-import type { ChainModifiers, LocaleCode } from 'contentful';
+import type { TypeSectionBlogListWithoutUnresolvableLinksResponse } from '@/@types';
 import { getBlogPosts } from '@/lib/contentful';
 import BlogCard from '@/components/BlogCard/BlogCard';
 import styles from './BlogListSection.module.scss';
 
 interface BlogListSectionProps {
-  entry: TypeSectionBlogList<ChainModifiers, LocaleCode>;
+  entry: TypeSectionBlogListWithoutUnresolvableLinksResponse;
   preview?: boolean;
 }
 
@@ -13,11 +12,7 @@ export default async function BlogListSection({
   entry,
   preview = false,
 }: BlogListSectionProps) {
-  const { heading, subheading, maxPosts } = entry.fields as {
-    heading: string;
-    subheading?: string;
-    maxPosts: number;
-  };
+  const { heading, subheading, maxPosts } = entry.fields;
   const posts = await getBlogPosts(maxPosts, preview);
 
   return (

@@ -1,5 +1,10 @@
 import { createClient } from 'contentful';
-import type { TypeBlogPostSkeleton, TypePageSkeleton } from '@/@types';
+import type {
+  TypeBlogPostSkeleton,
+  TypeBlogPostWithoutUnresolvableLinksResponse,
+  TypePageSkeleton,
+  TypePageWithoutUnresolvableLinksResponse,
+} from '@/@types';
 
 const deliveryClient = createClient({
   space: process.env.CONTENTFUL_SPACE_ID!,
@@ -16,9 +21,11 @@ function getClient(preview = false) {
   return preview ? previewClient : deliveryClient;
 }
 
-export async function getPageBySlug(slug: string, preview = false) {
-  const client = getClient(preview);
-  const entries = await client.getEntries<TypePageSkeleton>({
+export async function getPageBySlug(
+  slug: string,
+  preview = false,
+): Promise<TypePageWithoutUnresolvableLinksResponse | null> {
+  const entries = await getClient(preview).withoutUnresolvableLinks.getEntries<TypePageSkeleton>({
     content_type: 'page',
     'fields.slug': slug,
     include: 3,
@@ -26,19 +33,23 @@ export async function getPageBySlug(slug: string, preview = false) {
   return entries.items[0] ?? null;
 }
 
-export async function getBlogPosts(limit = 10, preview = false) {
-  const client = getClient(preview);
-  const entries = await client.getEntries<TypeBlogPostSkeleton>({
+export async function getBlogPosts(
+  limit = 10,
+  preview = false,
+): Promise<TypeBlogPostWithoutUnresolvableLinksResponse[]> {
+  const entries = await getClient(preview).withoutUnresolvableLinks.getEntries<TypeBlogPostSkeleton>({
     content_type: 'blogPost',
-    order: ['-fields.publishDate' as never],
+    order: ['-fields.publishDate'],
     limit,
   });
   return entries.items;
 }
 
-export async function getBlogPostBySlug(slug: string, preview = false) {
-  const client = getClient(preview);
-  const entries = await client.getEntries<TypeBlogPostSkeleton>({
+export async function getBlogPostBySlug(
+  slug: string,
+  preview = false,
+): Promise<TypeBlogPostWithoutUnresolvableLinksResponse | null> {
+  const entries = await getClient(preview).withoutUnresolvableLinks.getEntries<TypeBlogPostSkeleton>({
     content_type: 'blogPost',
     'fields.slug': slug,
     limit: 1,
@@ -46,10 +57,10 @@ export async function getBlogPostBySlug(slug: string, preview = false) {
   return entries.items[0] ?? null;
 }
 
-export async function getAllBlogPostSlugs() {
-  const entries = await deliveryClient.getEntries<TypeBlogPostSkeleton>({
+export async function getAllBlogPostSlugs(): Promise<string[]> {
+  const entries = await deliveryClient.withoutUnresolvableLinks.getEntries<TypeBlogPostSkeleton>({
     content_type: 'blogPost',
     select: ['fields.slug'],
   });
-  return entries.items.map((item) => item.fields.slug as string);
+  return entries.items.map((item) => item.fields.slug);
 }

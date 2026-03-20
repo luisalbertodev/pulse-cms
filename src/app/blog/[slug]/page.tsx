@@ -3,7 +3,6 @@ import { draftMode } from 'next/headers';
 import { notFound } from 'next/navigation';
 import { getBlogPostBySlug, getAllBlogPostSlugs } from '@/lib/contentful';
 import RichTextRenderer from '@/components/RichTextRenderer/RichTextRenderer';
-import type { Document } from '@contentful/rich-text-types';
 import styles from './page.module.scss';
 
 export const revalidate = 60;
@@ -51,17 +50,9 @@ export default async function BlogPostPage({
 
   if (!post) notFound();
 
-  const fields = post.fields as {
-    title: string;
-    featuredImage?: { fields?: { file?: { url?: string }; title?: string } };
-    author?: string;
-    publishDate?: string;
-    body?: Document;
-  };
-  const { title, featuredImage, author, publishDate, body } = fields;
-
+  const { title, featuredImage, author, publishDate, body } = post.fields;
   const imageUrl = assetUrl(featuredImage?.fields?.file?.url);
-  const imageAlt: string = featuredImage?.fields?.title ?? title;
+  const imageAlt = featuredImage?.fields?.title ?? title;
 
   return (
     <article className={styles.post}>

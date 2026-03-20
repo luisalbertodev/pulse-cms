@@ -1,9 +1,8 @@
-import type { TypeHero } from '@/@types';
-import type { ChainModifiers, LocaleCode } from 'contentful';
+import type { TypeHeroWithoutUnresolvableLinksResponse } from '@/@types';
 import styles from './Hero.module.scss';
 
 interface HeroProps {
-  entry: TypeHero<ChainModifiers, LocaleCode>;
+  entry: TypeHeroWithoutUnresolvableLinksResponse;
 }
 
 function assetUrl(url: string | undefined): string | undefined {
@@ -12,14 +11,8 @@ function assetUrl(url: string | undefined): string | undefined {
 }
 
 export default function Hero({ entry }: HeroProps) {
-  const fields = entry.fields as {
-    title: string;
-    subtitle?: string;
-    ctaText?: string;
-    ctaUrl?: string;
-    backgroundImage?: { fields?: { file?: { url?: string } } };
-  };
-  const bgUrl = assetUrl(fields.backgroundImage?.fields?.file?.url);
+  const { title, subtitle, ctaText, ctaUrl, backgroundImage } = entry.fields;
+  const bgUrl = assetUrl(backgroundImage?.fields?.file?.url);
 
   return (
     <section className={styles.hero}>
@@ -33,11 +26,11 @@ export default function Hero({ entry }: HeroProps) {
       )}
       <div className={styles.hero__overlay} aria-hidden="true" />
       <div className={styles.hero__content}>
-        <h1 className={styles.hero__title}>{fields.title}</h1>
-        {fields.subtitle && <p className={styles.hero__subtitle}>{fields.subtitle}</p>}
-        {fields.ctaText && fields.ctaUrl && (
-          <a href={fields.ctaUrl} className={styles.hero__cta}>
-            {fields.ctaText}
+        <h1 className={styles.hero__title}>{title}</h1>
+        {subtitle && <p className={styles.hero__subtitle}>{subtitle}</p>}
+        {ctaText && ctaUrl && (
+          <a href={ctaUrl} className={styles.hero__cta}>
+            {ctaText}
           </a>
         )}
       </div>

@@ -3,7 +3,6 @@ import { draftMode } from 'next/headers';
 import { notFound } from 'next/navigation';
 import { getPageBySlug } from '@/lib/contentful';
 import SectionRenderer from '@/components/SectionRenderer/SectionRenderer';
-import type { Entry, EntrySkeletonType, ChainModifiers, LocaleCode } from 'contentful';
 
 export async function generateMetadata(): Promise<Metadata> {
   const page = await getPageBySlug('/blog');
@@ -20,11 +19,7 @@ export default async function BlogPage() {
 
   if (!page) notFound();
 
-  const sections = (page.fields.sections ?? []) as Entry<
-    EntrySkeletonType,
-    ChainModifiers,
-    LocaleCode
-  >[];
-
-  return <SectionRenderer sections={sections} preview={preview} />;
+  return (
+    <SectionRenderer sections={page.fields.sections ?? []} preview={preview} />
+  );
 }
