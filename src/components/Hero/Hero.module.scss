@@ -1,0 +1,85 @@
+@use '@/styles/variables' as *;
+
+.hero {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 560px;
+  background-color: $color-text;
+  color: $color-surface;
+  overflow: hidden;
+
+  @include respond-to($bp-md) {
+    min-height: 680px;
+  }
+}
+
+.hero__bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  opacity: 0.4;
+}
+
+.hero__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom right,
+    rgb(0 0 0 / 0.7),
+    rgb(0 0 0 / 0.3)
+  );
+}
+
+.hero__content {
+  @include container;
+  position: relative;
+  z-index: 1;
+  padding-block: $space-20;
+}
+
+.hero__title {
+  font-family: $font-heading;
+  font-size: $font-size-4xl;
+  font-weight: 400;
+  line-height: 1.1;
+  max-width: 700px;
+  margin-bottom: $space-6;
+
+  @include respond-to($bp-md) {
+    font-size: $font-size-6xl;
+  }
+}
+
+.hero__subtitle {
+  font-size: $font-size-lg;
+  line-height: 1.6;
+  max-width: 560px;
+  margin-bottom: $space-8;
+  color: rgb(255 255 255 / 0.85);
+
+  @include respond-to($bp-md) {
+    font-size: $font-size-xl;
+  }
+}
+
+.hero__cta {
+  display: inline-block;
+  padding: $space-3 $space-8;
+  background-color: $color-accent;
+  color: $color-surface;
+  font-size: $font-size-base;
+  font-weight: 600;
+  border-radius: $radius-md;
+  text-decoration: none;
+  transition: background-color $transition-base;
+
+  &:hover {
+    background-color: $color-accent-hover;
+    text-decoration: none;
+    color: $color-surface;
+  }
+}

@@ -1,0 +1,96 @@
+@use '@/styles/variables' as *;
+
+.richtext {
+  font-size: $font-size-lg;
+  line-height: 1.75;
+  color: $color-text;
+
+  h2 {
+    font-family: $font-heading;
+    font-size: $font-size-3xl;
+    font-weight: 400;
+    margin-top: $space-12;
+    margin-bottom: $space-4;
+    line-height: 1.2;
+  }
+
+  h3 {
+    font-family: $font-heading;
+    font-size: $font-size-2xl;
+    font-weight: 400;
+    margin-top: $space-8;
+    margin-bottom: $space-3;
+    line-height: 1.3;
+  }
+
+  p {
+    margin-bottom: $space-6;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  strong {
+    font-weight: 700;
+  }
+
+  em {
+    font-style: italic;
+  }
+
+  u {
+    text-underline-offset: 3px;
+  }
+
+  ul,
+  ol {
+    margin-bottom: $space-6;
+    padding-left: $space-8;
+
+    li {
+      margin-bottom: $space-2;
+    }
+  }
+
+  ul {
+    list-style-type: disc;
+  }
+
+  ol {
+    list-style-type: decimal;
+  }
+
+  blockquote {
+    margin-block: $space-8;
+    padding-left: $space-6;
+    border-left: 4px solid $color-accent;
+    color: $color-text-muted;
+    font-style: italic;
+    font-size: $font-size-xl;
+
+    p {
+      margin-bottom: 0;
+    }
+  }
+
+  a {
+    color: $color-accent;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+
+    &:hover {
+      color: $color-accent-hover;
+    }
+  }
+
+  &__figure {
+    margin-block: $space-8;
+  }
+
+  &__image {
+    width: 100%;
+    height: auto;
+    border-radius: $radius-md;
+  }
+}

@@ -1,0 +1,52 @@
+@use '@/styles/variables' as *;
+
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background-color: rgb(255 255 255 / 0.85);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid $color-border;
+}
+
+.navbar__inner {
+  @include container;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 4rem;
+}
+
+.navbar__logo {
+  font-family: $font-heading;
+  font-size: $font-size-xl;
+  color: $color-text;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: none;
+    color: $color-accent;
+  }
+}
+
+.navbar__nav {
+  display: flex;
+  align-items: center;
+  gap: $space-6;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.navbar__link {
+  font-size: $font-size-sm;
+  font-weight: 500;
+  color: $color-text-muted;
+  text-decoration: none;
+  transition: color $transition-base;
+
+  &:hover {
+    color: $color-accent;
+    text-decoration: none;
+  }
+}

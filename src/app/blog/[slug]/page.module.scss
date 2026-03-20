@@ -1,0 +1,62 @@
+@use '@/styles/variables' as *;
+
+.post {
+  padding-bottom: $space-24;
+}
+
+.post__header {
+  background-color: $color-surface;
+  padding-block: $space-16;
+  border-bottom: 1px solid $color-border;
+  margin-bottom: $space-12;
+}
+
+.post__header_inner {
+  @include container-narrow;
+}
+
+.post__meta {
+  display: flex;
+  align-items: center;
+  gap: $space-3;
+  font-size: $font-size-sm;
+  color: $color-text-muted;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 500;
+  margin-bottom: $space-4;
+}
+
+.post__title {
+  font-family: $font-heading;
+  font-size: $font-size-4xl;
+  font-weight: 400;
+  line-height: 1.1;
+  color: $color-text;
+
+  @include respond-to($bp-md) {
+    font-size: $font-size-5xl;
+  }
+}
+
+.post__cover {
+  @include container;
+  margin-bottom: $space-12;
+  max-width: $container-narrow;
+
+  @media (min-width: $bp-sm) {
+    padding-inline: $space-6;
+  }
+}
+
+.post__cover_image {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: $radius-lg;
+}
+
+.post__body {
+  @include container-narrow;
+}
