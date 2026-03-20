@@ -133,3 +133,6 @@ CONTENTFUL_ACCESS_TOKEN          # Delivery API
 CONTENTFUL_PREVIEW_ACCESS_TOKEN  # Preview API
 CONTENTFUL_PREVIEW_SECRET        # Validates draft mode requests
 ```
+
+## Testing
+Testing conventions, patterns, and examples are defined in docs/TESTING.md. Read it before writing any test.
