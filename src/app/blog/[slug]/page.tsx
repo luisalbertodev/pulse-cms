@@ -21,9 +21,15 @@ export async function generateMetadata({
   const { slug } = await params;
   const post = await getCachedBlogPostBySlug(slug);
   if (!post) return {};
+  const featuredImageUrl = assetUrl(post.fields.featuredImage?.fields?.file?.url);
   return {
     title: post.fields.title,
     description: post.fields.excerpt,
+    openGraph: {
+      title: post.fields.title,
+      description: post.fields.excerpt,
+      ...(featuredImageUrl && { images: [{ url: featuredImageUrl }] }),
+    },
   };
 }
 
