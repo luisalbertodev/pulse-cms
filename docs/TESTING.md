@@ -2,65 +2,37 @@
 
 ## Philosophy
 
-Tests describe behavior from the consumer's perspective, not implementation details. Each test answers: "given this scenario, what outcome does the consumer expect?" If you find yourself describing how the code works internally (prepends, appends, calls, iterates), rewrite the description to express what the consumer observes.
+Tests describe behavior from the consumer's perspective, not implementation details. Each test answers: "given this scenario, what outcome does the consumer expect?"
 
-We follow BDD for naming and TDD for workflow: write the test first, see it fail, make it pass.
+BDD for naming, TDD for workflow: write the test first, see it fail, make it pass.
 
 ## BDD Naming
 
 Bad — describes implementation:
 - "should prepend https: when URL starts with //"
 - "should call getEntries with content_type page"
-- "should return null when items array is empty"
 
 Good — describes behavior from consumer's perspective:
 - "should resolve protocol-relative URLs to a valid https URL"
 - "should retrieve the page matching the given slug"
-- "should indicate no page exists for an unknown slug"
+- "should display the main heading with the provided title"
+- "should link the title to the corresponding blog post page"
 
-The describe block names the subject. The it block describes the observable behavior or expected outcome.
-
-```typescript
-describe('assetUrl', () => {
-  it('should resolve protocol-relative URLs to a valid https URL', () => {});
-  it('should leave fully qualified URLs unchanged', () => {});
-  it('should return undefined when no URL is provided', () => {});
-});
-```
-
-For components, describe what the user sees or can interact with:
-
-```typescript
-describe('Hero', () => {
-  it('should display the main heading with the provided title', () => {});
-  it('should present a call-to-action linking to the target URL', () => {});
-  it('should show the background image behind the content', () => {});
-});
-```
+The `describe` block names the subject. The `it` block describes observable behavior.
 
 ## Structure
 
-Tests live next to their module: `utils.ts` → `utils.test.ts`, `Hero.tsx` → `Hero.test.tsx`.
+Tests live next to their module:
 
 ```
-src/
-  lib/
-    utils.ts
-    utils.test.ts
-    contentful.ts
-    contentful.test.ts
-  components/
-    Hero/
-      Hero.tsx
-      Hero.test.tsx
-    BlogCard/
-      BlogCard.tsx
-      BlogCard.test.tsx
+src/lib/utils.ts            → src/lib/utils.test.ts
+src/components/Hero/Hero.tsx → src/components/Hero/Hero.test.tsx
+src/app/api/draft/route.ts  → src/app/api/draft/route.test.ts
 ```
 
 ## Arrange / Act / Assert
 
-Every test body follows this pattern with explicit comments:
+Every test body uses this pattern with explicit comments:
 
 ```typescript
 it('should resolve protocol-relative URLs to a valid https URL', () => {
@@ -75,116 +47,128 @@ it('should resolve protocol-relative URLs to a valid https URL', () => {
 });
 ```
 
-- **Arrange**: set up inputs, mocks, fixtures. Name the variable for what it represents.
-- **Act**: call the function or perform the interaction. Store the result in `actual`.
-- **Assert**: verify `actual` against the expected outcome. One logical assertion per test.
+- **Arrange**: set up inputs, mocks, fixtures.
+- **Act**: perform the operation. Store the result in `actual`.
+- **Assert**: verify `actual`. One logical assertion per test.
 
-## Component Testing Pattern — getView Factory
+## Component Testing — getView Factory
 
-Every component test uses an async `getView` factory that returns a Promise. The factory encapsulates rendering and exposes a semantic interaction API. This decouples "how to interact" from "what to verify" and ensures async safety throughout.
-
-All functions inside the returned object must be async, even if the current implementation doesn't require it. This guarantees consistency and prevents breaking tests when interactions become async in the future.
+Every component test uses an async `getView` factory that encapsulates rendering and exposes semantic getters and actions. Tests never interact with DOM directly or import `userEvent`.
 
 ```typescript
 import { render, screen } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
-import Hero from './Hero';
+import { userEvent } from '@testing-library/user-event';
 
-const defaultEntry = createHeroEntry();
-
-describe('Hero', () => {
+describe('BlogCard', () => {
   const getView = async (overrides?: Partial<typeof defaultEntry.fields>) => {
-    const entry = overrides
-      ? createHeroEntry(overrides)
-      : defaultEntry;
+    const entry = overrides ? createEntry(overrides) : defaultEntry;
+    const user = userEvent.setup();
+    const target = render(<BlogCard entry={entry} />);
 
-    const target = render(<Hero entry={entry} />);
+    // Getters — what the user sees
+    const getTitleLink = async () =>
+      screen.getByRole('link', { name: entry.fields.title });
 
-    const getTitle = async () =>
-      screen.getByRole('heading', { level: 1 });
+    const getExcerpt = async () =>
+      screen.getByText(entry.fields.excerpt);
 
-    const getSubtitle = async () =>
-      screen.getByText(entry.fields.subtitle);
-
-    const getCtaLink = async () =>
-      screen.getByRole('link', { name: entry.fields.ctaText });
-
-    const getBackgroundImage = async () =>
-      target.container.querySelector<HTMLImageElement>('img');
-
-    return {
-      target,
-      getTitle,
-      getSubtitle,
-      getCtaLink,
-      getBackgroundImage,
+    // Actions — what the user does
+    const clickTitle = async () => {
+      const link = await getTitleLink();
+      await user.click(link);
     };
+
+    return { target, getTitleLink, getExcerpt, clickTitle };
   };
 
-  it('should display the main heading with the provided title', async () => {
+  it('should link the title to the corresponding blog post page', async () => {
     // Arrange.
     const view = await getView();
 
     // Act.
-    const actual = await view.getTitle();
+    const actual = await view.getTitleLink();
 
     // Assert.
-    expect(actual).toHaveTextContent('Productivity that adapts to you');
-  });
-
-  it('should present a call-to-action linking to the target URL', async () => {
-    // Arrange.
-    const view = await getView();
-
-    // Act.
-    const actual = await view.getCtaLink();
-
-    // Assert.
-    expect(actual).toHaveAttribute('href', 'https://example.com/signup');
+    expect(actual).toHaveAttribute('href', '/blog/my-post-slug');
   });
 });
 ```
 
-Rules for getView:
-- Always returns a Promise (async function)
-- Every function in the returned object is async
-- Returns getter/interaction functions, never raw DOM nodes
+### getView rules
+
+- Always async, returns a Promise
+- Every getter and action inside is async
+- `userEvent.setup()` is called once inside getView
+- Getters return elements, actions perform interactions
 - Accepts optional overrides to customize props per test
-- Default props come from a fixture factory defined at the top of the describe block
-- Use `screen.getByRole` and `screen.getByText` over `querySelector` when possible
+- Default props come from a fixture factory at the top of the describe
+- Prefer `screen.getByRole` and `screen.getByText` over `querySelector`
+
+## Navigation and Links
+
+This project uses Next.js App Router with `<Link>` components (not React Router). There's no injectable `history` object.
+
+**For presentational components** (Hero, BlogCard): test that the rendered `<a>` has the correct `href`. This is the component's responsibility — routing is Next.js's job.
+
+```typescript
+it('should link the title to the corresponding blog post page', async () => {
+  // Arrange.
+  const view = await getView();
+
+  // Act.
+  const actual = await view.getTitleLink();
+
+  // Assert.
+  expect(actual).toHaveAttribute('href', '/blog/my-post-slug');
+});
+```
+
+**For API routes** (draft, revalidate): mock `redirect` from `next/navigation` and verify it was called with the correct path.
+
+```typescript
+vi.mock('next/navigation', () => ({
+  redirect: vi.fn(),
+}));
+
+import { redirect } from 'next/navigation';
+const mockRedirect = vi.mocked(redirect);
+
+it('should redirect to the validated blog post page after enabling draft mode', async () => {
+  // Arrange.
+  mockGetBlogPost.mockResolvedValue(blogPostFixture);
+  const request = createRequest({ secret: 'valid', slug: '/blog/my-post' });
+
+  // Act.
+  await GET(request);
+
+  // Assert.
+  expect(mockRedirect).toHaveBeenCalledWith('/blog/my-post-slug');
+});
+```
 
 ## Fixtures
 
-Define typed fixtures that match the generated Contentful types. Never use `as any`. Use the `WithoutUnresolvableLinksResponse` types from `@/@types`.
-
-Create factory functions for reusable fixtures:
+Typed fixture factories matching generated Contentful types. Never use `as any`.
 
 ```typescript
-function createHeroEntry(
-  overrides?: Partial<HeroFields>
-): TypeHeroWithoutUnresolvableLinksResponse {
+function createBlogPostEntry(overrides?: Partial<BlogPostFields>) {
   return {
     sys: {
-      id: 'hero-1',
+      id: 'post-1',
       type: 'Entry',
-      contentType: {
-        sys: { id: 'hero', type: 'Link', linkType: 'ContentType' },
-      },
-      // ... minimal sys fields needed
+      contentType: { sys: { id: 'blogPost', type: 'Link', linkType: 'ContentType' } },
     },
     fields: {
-      internalName: 'Home Hero',
-      title: 'Productivity that adapts to you',
-      subtitle: 'Pulse helps teams organize and deliver work faster.',
-      ctaText: 'Start Free Trial',
-      ctaUrl: 'https://example.com/signup',
-      backgroundImage: {
+      title: 'Building a Design System',
+      slug: 'building-a-design-system',
+      excerpt: 'How to build scalable components.',
+      author: 'Sarah Mitchell',
+      publishDate: '2026-03-18',
+      featuredImage: {
         sys: { id: 'asset-1', type: 'Asset' },
-        fields: {
-          title: 'Hero background',
-          file: { url: '//images.ctfassets.net/space/hero.jpg' },
-        },
+        fields: { title: 'Featured', file: { url: '//images.ctfassets.net/img.jpg' } },
       },
+      body: { nodeType: 'document', content: [], data: {} },
       ...overrides,
     },
     metadata: { tags: [] },
@@ -194,7 +178,7 @@ function createHeroEntry(
 
 ## Mocking
 
-Use `vi.mock` for external modules. Mock at the module boundary, not internals.
+Mock at the module boundary with `vi.mock`. Use `vi.mocked()` for type-safe access.
 
 ```typescript
 vi.mock('@/lib/contentful', () => ({
@@ -204,63 +188,55 @@ vi.mock('@/lib/contentful', () => ({
 
 import { getBlogPostBySlug } from '@/lib/contentful';
 const mockGetBlogPost = vi.mocked(getBlogPostBySlug);
-
-it('should indicate the post was not found for an unknown slug', async () => {
-  // Arrange.
-  mockGetBlogPost.mockResolvedValue(null);
-
-  // Act.
-  const actual = await GET(request);
-
-  // Assert.
-  expect(actual.status).toEqual(404);
-});
 ```
 
 For Next.js modules:
 
 ```typescript
 vi.mock('next/headers', () => ({
-  draftMode: vi.fn(() => ({ isEnabled: false })),
+  draftMode: vi.fn(() => Promise.resolve({ enable: vi.fn(), disable: vi.fn(), isEnabled: false })),
 }));
 
 vi.mock('next/cache', () => ({
   revalidatePath: vi.fn(),
+}));
+
+vi.mock('next/navigation', () => ({
+  redirect: vi.fn(),
+  notFound: vi.fn(),
 }));
 ```
 
 ## Do
 
 - Describe behavior from the consumer's perspective
-- Use async getView pattern for all component tests
-- Use typed fixture factories matching generated Contentful types
+- Use async getView factory for all component tests
+- Encapsulate all interactions inside getView as actions
+- Use typed fixture factories
 - Mock at module boundaries
 - One logical assertion per test
-- Name variables descriptively: `actual`, `expected`, not `result`, `res`, `data`
-- Test edge cases: undefined inputs, empty arrays, missing optional fields
-- Keep all getView functions async for consistency and future-proofing
+- Test edge cases: undefined, empty arrays, missing optional fields
 
 ## Don't
 
-- Don't describe implementation in test names (no "should call", "should prepend", "should iterate")
-- Don't test implementation details (internal state, private methods, call order)
-- Don't use `as any` — type your fixtures properly
-- Don't use snapshot tests — they verify structure, not behavior
+- Don't describe implementation in test names
+- Don't test implementation details
+- Don't use `as any`
+- Don't use snapshot tests
 - Don't test styling or CSS classes
-- Don't mock what you don't own unless at the module boundary
-- Don't write tests that pass when the code is broken
-- Don't put multiple actions or unrelated assertions in a single test
-- Don't use synchronous functions in getView — everything is async
+- Don't import `userEvent` in test body — only inside getView
+- Don't test `window.location` — verify `href` attributes for links, mock `redirect` for API routes
+- Don't put multiple unrelated assertions in a single test
 
 ## Test Categories
 
-**Unit tests** (utils, pure functions): no mocks needed, test input → output.
+**Unit** (utils, pure functions): no mocks, test input → output.
 
-**Component tests** (Hero, BlogCard, RichTextRenderer): use async getView pattern, mock data via fixture factories, verify rendered output.
+**Component** (Hero, BlogCard, RichTextRenderer): getView pattern, fixture factories, verify rendered output.
 
-**Integration tests** (API routes): mock external dependencies (contentful, next/headers, next/cache), test the full request → response flow.
+**Integration** (API routes): mock external deps, test request → response flow.
 
-## Running Tests
+## Running
 
 ```bash
 npm run test        # watch mode
