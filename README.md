@@ -109,6 +109,18 @@ src/
       revalidate/      ← Contentful webhook for on-demand ISR
 ```
 
+## Testing
+
+The project includes a test suite following BDD conventions with Vitest and React Testing Library. Tests cover three layers:
+
+**Unit tests** for shared utilities (URL resolution, date formatting). **Component tests** using an async `getView` factory pattern that encapsulates rendering and exposes semantic getters and actions — decoupling interaction logic from assertions. **Integration tests** for API routes (draft mode activation, webhook revalidation) with mocked external dependencies at module boundaries.
+
+Testing conventions and patterns are documented in `docs/TESTING.md`.
+```bash
+npm run test        # watch mode
+npm run test:run    # single run
+```
+
 ## Running locally
 
 ```bash
