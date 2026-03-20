@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { draftMode } from 'next/headers';
 import { notFound } from 'next/navigation';
-import { getBlogPostBySlug, getAllBlogPostSlugs } from '@/lib/contentful';
+import { getCachedBlogPostBySlug, getCachedAllBlogPostSlugs } from '@/lib/cached-contentful';
 import { assetUrl, formatDate } from '@/lib/utils';
 import RichTextRenderer from '@/components/RichTextRenderer/RichTextRenderer';
 import styles from './page.module.scss';
@@ -9,7 +9,7 @@ import styles from './page.module.scss';
 export const revalidate = 60;
 
 export async function generateStaticParams() {
-  const slugs = await getAllBlogPostSlugs();
+  const slugs = await getCachedAllBlogPostSlugs();
   return slugs.map((slug) => ({ slug }));
 }
 
@@ -19,7 +19,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const post = await getBlogPostBySlug(slug);
+  const post = await getCachedBlogPostBySlug(slug);
   if (!post) return {};
   return {
     title: post.fields.title,
@@ -34,7 +34,7 @@ export default async function BlogPostPage({
 }) {
   const { slug } = await params;
   const { isEnabled: preview } = await draftMode();
-  const post = await getBlogPostBySlug(slug, preview);
+  const post = await getCachedBlogPostBySlug(slug, preview);
 
   if (!post) notFound();
 
