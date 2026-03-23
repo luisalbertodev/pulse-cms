@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import type { TypeBlogPostWithoutUnresolvableLinksResponse } from '@/@types';
 import { assetUrl, formatDate } from '@/lib/utils';
@@ -16,9 +17,10 @@ export default function BlogCard({ entry }: BlogCardProps) {
     <article className={styles.card}>
       {imageUrl && (
         <div className={styles['card__image-wrapper']}>
-          <img
+          <Image
             src={imageUrl}
             alt={imageAlt}
+            fill
             className={styles.card__image}
           />
         </div>

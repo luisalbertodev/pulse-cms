@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
 import { BLOCKS, INLINES, MARKS } from '@contentful/rich-text-types';
 import type { Block, Document, Inline } from '@contentful/rich-text-types';
@@ -49,11 +50,11 @@ export default function RichTextRenderer({ document }: RichTextRendererProps) {
             if (!url) return null;
             return (
               <figure className={styles.richtext__figure}>
-                <img
+                <Image
                   src={url}
                   alt={alt}
-                  width={width}
-                  height={height}
+                  width={width ?? 1200}
+                  height={height ?? 800}
                   className={styles.richtext__image}
                 />
               </figure>

@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import type { TypeHeroWithoutUnresolvableLinksResponse } from '@/@types';
 import { assetUrl } from '@/lib/utils';
 import styles from './Hero.module.scss';
@@ -13,10 +14,12 @@ export default function Hero({ entry }: HeroProps) {
   return (
     <section className={styles.hero}>
       {bgUrl && (
-        <img
+        <Image
           src={bgUrl}
           alt=""
           aria-hidden="true"
+          fill
+          priority
           className={styles.hero__bg}
         />
       )}

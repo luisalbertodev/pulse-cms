@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import type { Metadata } from 'next';
 import { draftMode } from 'next/headers';
 import { notFound } from 'next/navigation';
@@ -65,9 +66,11 @@ export default async function BlogPostPage({
 
       {imageUrl && (
         <div className={styles.post__cover}>
-          <img
+          <Image
             src={imageUrl}
             alt={imageAlt}
+            fill
+            priority
             className={styles.post__cover_image}
           />
         </div>

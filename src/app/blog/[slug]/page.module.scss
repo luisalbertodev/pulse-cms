@@ -41,8 +41,12 @@
 
 .post__cover {
   @include container;
+  position: relative;
+  aspect-ratio: 16 / 9;
   margin-bottom: $space-12;
   max-width: $container-narrow;
+  overflow: hidden;
+  border-radius: $radius-lg;
 
   @media (min-width: $bp-sm) {
     padding-inline: $space-6;
@@ -50,11 +54,7 @@
 }
 
 .post__cover_image {
-  width: 100%;
-  height: auto;
-  aspect-ratio: 16 / 9;
   object-fit: cover;
-  border-radius: $radius-lg;
 }
 
 .post__body {
