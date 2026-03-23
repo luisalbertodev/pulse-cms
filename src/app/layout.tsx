@@ -28,9 +28,6 @@ export const metadata: Metadata = {
     default: "Pulse",
   },
   description: "Pulse — the place for modern ideas.",
-  verification: {
-    google: process.env.GOOGLE_VERIFICATION_TOKEN ?? "",
-  },
 };
 
 export default async function RootLayout({
