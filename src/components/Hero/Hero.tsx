@@ -20,6 +20,7 @@ export default function Hero({ entry }: HeroProps) {
           aria-hidden="true"
           fill
           priority
+          sizes="100vw"
           className={styles.hero__bg}
         />
       )}

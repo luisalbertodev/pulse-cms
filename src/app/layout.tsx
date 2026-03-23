@@ -37,9 +37,7 @@ export default async function RootLayout({
       lang="en"
       className={`${dmSerifDisplay.variable} ${dmSans.variable}`}
     >
-      <head>
-        <link rel="preconnect" href="https://images.ctfassets.net" />
-      </head>
+
       <body>
         {isDraft && (
           <div
