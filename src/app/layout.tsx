@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import { DM_Serif_Display, DM_Sans } from 'next/font/google';
 import { draftMode } from 'next/headers';
 import Link from 'next/link';
+import { SpeedInsights } from '@vercel/speed-insights/next';
+import { Analytics } from '@vercel/analytics/react';
 import Navbar from '@/components/Navbar/Navbar';
 import '@/styles/globals.scss';
 
@@ -63,6 +65,8 @@ export default async function RootLayout({
         )}
         <Navbar />
         <main>{children}</main>
+        <SpeedInsights />
+        <Analytics />
       </body>
     </html>
   );

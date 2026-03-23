@@ -131,6 +131,7 @@ CONTENTFUL_SPACE_ID
 CONTENTFUL_ACCESS_TOKEN          # Delivery API
 CONTENTFUL_PREVIEW_ACCESS_TOKEN  # Preview API
 CONTENTFUL_PREVIEW_SECRET        # Validates draft mode requests
+NEXT_PUBLIC_SITE_URL             # Base URL for sitemap/robots/metadataBase (e.g. https://pulse-cms-eight.vercel.app)
 ```
 
 ## Testing
