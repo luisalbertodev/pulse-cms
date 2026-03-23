@@ -19,6 +19,16 @@
     "react": "19.2.4",
     "react-dom": "19.2.4"
   },
+  "browserslist": {
+    "production": [
+      "> 0.5%, last 2 major versions, not dead"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
