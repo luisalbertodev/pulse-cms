@@ -18,6 +18,7 @@ const dmSans = DM_Sans({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'https://pulse-cms-eight.vercel.app'),
   title: {
     template: '%s | Pulse',
     default: 'Pulse',
