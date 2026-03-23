@@ -130,7 +130,7 @@ describe('Hero', () => {
     const actual = await view.getBackgroundImage();
 
     // Assert.
-    expect(actual).toHaveAttribute('src', 'https://images.ctfassets.net/space/hero.jpg');
+    expect(actual!.getAttribute('src')).toContain(encodeURIComponent('https://images.ctfassets.net/space/hero.jpg'));
   });
 
   it('should not render a background image when none is provided', async () => {

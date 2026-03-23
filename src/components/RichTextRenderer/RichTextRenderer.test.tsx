@@ -314,7 +314,7 @@ describe('RichTextRenderer', () => {
     const actual = await view.getImage();
 
     // Assert.
-    expect(actual).toHaveAttribute('src', 'https://images.ctfassets.net/space/mountain.jpg');
+    expect(actual!.getAttribute('src')).toContain(encodeURIComponent('https://images.ctfassets.net/space/mountain.jpg'));
   });
 
   it('should describe the embedded image using the asset description as alt text', async () => {

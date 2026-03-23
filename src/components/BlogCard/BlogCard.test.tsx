@@ -155,7 +155,7 @@ describe('BlogCard', () => {
     const actual = await view.getFeaturedImage();
 
     // Assert.
-    expect(actual).toHaveAttribute('src', 'https://images.ctfassets.net/space/design.jpg');
+    expect(actual!.getAttribute('src')).toContain(encodeURIComponent('https://images.ctfassets.net/space/design.jpg'));
   });
 
   it('should not render an image when no featured image is provided', async () => {
