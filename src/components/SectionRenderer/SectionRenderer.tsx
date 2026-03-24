@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import {
   isTypeHero,
   isTypeSectionBlogList,
@@ -7,6 +8,7 @@ import {
 } from '@/@types';
 import Hero from '@/components/Hero/Hero';
 import BlogListSection from '@/components/BlogListSection/BlogListSection';
+import BlogListLoading from '@/app/blog/loading';
 
 type PageSections = NonNullable<
   TypePageWithoutUnresolvableLinksResponse['fields']['sections']
@@ -38,11 +40,12 @@ export default function SectionRenderer({
         }
         if (isTypeSectionBlogList(section)) {
           return (
-            <BlogListSection
-              key={section.sys.id}
-              entry={section as TypeSectionBlogListWithoutUnresolvableLinksResponse}
-              preview={preview}
-            />
+            <Suspense key={section.sys.id} fallback={<BlogListLoading />}>
+              <BlogListSection
+                entry={section as TypeSectionBlogListWithoutUnresolvableLinksResponse}
+                preview={preview}
+              />
+            </Suspense>
           );
         }
         return null;
