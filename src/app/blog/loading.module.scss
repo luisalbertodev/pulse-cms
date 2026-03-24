@@ -1,0 +1,124 @@
+@use '@/styles/variables' as *;
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+%skeleton {
+  background: linear-gradient(
+    90deg,
+    $color-border 25%,
+    #d1d5db 50%,
+    $color-border 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  border-radius: $radius-sm;
+}
+
+.section {
+  padding-block: $space-20;
+  background-color: $color-bg;
+}
+
+.section__inner {
+  @include container;
+}
+
+.section__header {
+  text-align: center;
+  margin-bottom: $space-12;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $space-4;
+}
+
+.section__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: $space-8;
+
+  @include respond-to($bp-md) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @include respond-to($bp-lg) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.skeleton__heading {
+  @extend %skeleton;
+  height: 2.5rem;
+  width: min(320px, 80%);
+}
+
+.skeleton__subheading {
+  @extend %skeleton;
+  height: 1.25rem;
+  width: min(400px, 90%);
+}
+
+.card {
+  background-color: $color-surface;
+  border-radius: $radius-lg;
+  overflow: hidden;
+  box-shadow: $shadow-sm;
+  border: 1px solid $color-border;
+  display: flex;
+  flex-direction: column;
+}
+
+.card__image {
+  @extend %skeleton;
+  aspect-ratio: 16 / 9;
+  border-radius: 0;
+}
+
+.card__body {
+  padding: $space-6;
+  display: flex;
+  flex-direction: column;
+  gap: $space-3;
+  flex: 1;
+}
+
+.skeleton__meta {
+  @extend %skeleton;
+  height: 0.75rem;
+  width: 40%;
+}
+
+.skeleton__title {
+  @extend %skeleton;
+  height: 1.5rem;
+  width: 90%;
+}
+
+.skeleton__title_short {
+  @extend %skeleton;
+  height: 1.5rem;
+  width: 60%;
+}
+
+.skeleton__excerpt {
+  @extend %skeleton;
+  height: 1rem;
+  width: 100%;
+}
+
+.skeleton__excerpt_short {
+  @extend %skeleton;
+  height: 1rem;
+  width: 75%;
+  margin-bottom: $space-4;
+}
+
+.skeleton__link {
+  @extend %skeleton;
+  height: 1rem;
+  width: 20%;
+  margin-top: auto;
+}

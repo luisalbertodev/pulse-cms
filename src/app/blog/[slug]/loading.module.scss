@@ -1,0 +1,94 @@
+@use '@/styles/variables' as *;
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+%skeleton {
+  background: linear-gradient(
+    90deg,
+    $color-border 25%,
+    #d1d5db 50%,
+    $color-border 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  border-radius: $radius-sm;
+}
+
+.post {
+  padding-bottom: $space-24;
+}
+
+.post__header {
+  background-color: $color-surface;
+  padding-block: $space-16;
+  border-bottom: 1px solid $color-border;
+  margin-bottom: $space-12;
+}
+
+.post__header_inner {
+  @include container-narrow;
+  display: flex;
+  flex-direction: column;
+  gap: $space-4;
+}
+
+.post__cover {
+  @include container;
+  max-width: $container-narrow;
+  margin-bottom: $space-12;
+}
+
+.post__body {
+  @include container-narrow;
+  display: flex;
+  flex-direction: column;
+  gap: $space-4;
+}
+
+.skeleton__meta {
+  @extend %skeleton;
+  height: 0.875rem;
+  width: 200px;
+}
+
+.skeleton__title {
+  @extend %skeleton;
+  height: 3rem;
+  width: 90%;
+
+  @include respond-to($bp-md) {
+    height: 3.5rem;
+  }
+}
+
+.skeleton__title_short {
+  @extend %skeleton;
+  height: 3rem;
+  width: 65%;
+
+  @include respond-to($bp-md) {
+    height: 3.5rem;
+  }
+}
+
+.skeleton__cover {
+  @extend %skeleton;
+  aspect-ratio: 16 / 9;
+  border-radius: $radius-lg;
+  width: 100%;
+}
+
+.skeleton__paragraph {
+  @extend %skeleton;
+  height: 1rem;
+  width: 100%;
+}
+
+.skeleton__paragraph_short {
+  @extend %skeleton;
+  height: 1rem;
+  width: 60%;
+}
